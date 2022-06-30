@@ -2,8 +2,6 @@ package com.abregujuancruz.globallogicapp.ui.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,21 +26,19 @@ class ComputerListActivity : AppCompatActivity() {
             computerList = it
             initRecyclerView(computerList)
         }
+        
     }
     
     private fun initRecyclerView(computerList : ArrayList<Computer>) {
-        shimmerControl()
-        val adapter = ComputerAdapter(computerList)
-        binding.rvComputer.adapter = adapter
-        val manager = LinearLayoutManager(this)
-        binding.rvComputer.layoutManager = manager
+        binding.rvComputer.adapter = ComputerAdapter(computerList)
+        binding.rvComputer.layoutManager = LinearLayoutManager(this)
+       
+        computerViewModel.controlVisibility()
+        computerViewModel.visibility.observe(this) {
+            binding.rvComputer.visibility = if(it) View.VISIBLE else View.GONE
+            binding.tvTitleList.visibility = if(it) View.VISIBLE else View.GONE
+            binding.shimmerLayout.visibility = if(it) View.GONE else View.VISIBLE
+        }
     }
     
-    private fun shimmerControl(){
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding.rvComputer.visibility = View.VISIBLE
-            binding.shimmerLayout.visibility = View.GONE
-            binding.tvTitleList.visibility = View.VISIBLE
-        }, 1000)
-    }
 }
